@@ -1,0 +1,38 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nagp-aggregator-service-deployment
+  labels:
+    app: nagp-aggregator-service
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: nagp-aggregator-service
+  template:
+    metadata:
+      labels:
+        app: nagp-aggregator-service
+    spec:
+      containers:
+        - name: nagp-aggregator-service
+          image: prateek91sharma/nagp-aggregator-service:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 80
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: nagp-aggregator-service
+spec:
+  selector:
+    app: nagp-aggregator-service
+  ports:
+    - protocol: TCP
+      port: 8083
+      targetPort: 8083
+  type: LoadBalancer            
+ 
