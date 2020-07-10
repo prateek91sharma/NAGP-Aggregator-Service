@@ -18,6 +18,11 @@ spec:
       containers:
         - name: nagp-aggregator-service
           image: prateek91sharma/nagp-aggregator-service:latest
+          env:
+            - name: opentracing.jaeger.udp-sender.host
+              value: jaeger-agent 
+            - name: opentracing.jaeger.udp-sender.port
+              value: "6831"    
           ports:
             - containerPort: 80
 ---
@@ -33,5 +38,19 @@ spec:
     - protocol: TCP
       port: 80
       targetPort: 8083
-  type: LoadBalancer            
+  type: LoadBalancer  
+  
+---
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRoleBinding
+metadata:
+  name: ribbon-list-server-binding
+subjects:
+  - kind: ServiceAccount
+    name: default
+    namespace: default
+roleRef:
+  kind: ClusterRole
+  name: cluster-admin
+  apiGroup: rbac.authorization.k8s.io            
  
